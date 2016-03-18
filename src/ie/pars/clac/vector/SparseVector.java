@@ -45,6 +45,7 @@ public class SparseVector extends TreeMap<Integer, Double> {
     String strLabel;
     double[] arrayValueSet;
 
+    
     /**
      * create empty vector
      */
@@ -54,6 +55,11 @@ public class SparseVector extends TreeMap<Integer, Double> {
         convertedToArray = false;
     }
 
+    public SparseVector(TreeMap<Integer, Double> treemap) {
+        super(treemap);
+        lengthCompuetd = false;
+        convertedToArray = false;
+    }
     /**
      * create empty vector with length
      */
@@ -239,9 +245,9 @@ public class SparseVector extends TreeMap<Integer, Double> {
      *
      * @return
      */
-    public final int getDimension() {
-        return diemension;
-    }
+//    public final int getDimension() {
+//        return diemension;
+//    }
 
     public int[] getKeySetArray() {
         if (convertedToArray) {
@@ -288,7 +294,7 @@ public class SparseVector extends TreeMap<Integer, Double> {
         return sb.toString();
     }
 
-    public String toStringPresentation() {
+    public String toStringDensePresentation() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < diemension; i++) {
             if (keySet().contains(i)) {
