@@ -31,10 +31,16 @@ import java.util.TreeMap;
  */
 public class SparseVector extends TreeMap<Integer, Double> {
 
+    
+
+   
+
     /**
      * eventually the map must be replaced with a more proper (memory friendly)
      * imple.
      */
+    public static final String LABEL_DELIMIT = "\t:";
+    public static final String VECTOR_IND_VLU_DELIMIT = ":";
     private int diemension = 0; // note dimension and the size of the map are different!
     private boolean convertedToArray;
     private int[] keySetArray;
@@ -200,7 +206,13 @@ public class SparseVector extends TreeMap<Integer, Double> {
             this.put(i, elementValue);
         }
     }
-
+    
+ public void addMultiplyVector(SparseVector v, double mult) {
+        for (int i : v.keySet()) {
+            Double elementValue = this.get(i) + (v.get(i) * mult);
+            this.put(i, elementValue);
+        }
+    }
     public void addVectorPermuted(SparseVector v, int permutationOffset) {
         for (int index : v.keySet()) {
             int newPermutedOffset = permutationOffset + index;
@@ -293,7 +305,19 @@ public class SparseVector extends TreeMap<Integer, Double> {
         });
         return sb.toString();
     }
+public static SparseVector fromString(String line) {
 
+        SparseVector sv = new SparseVector();
+        String[] splitLine = line.split(" ");
+        for (int i = 0; i < splitLine.length; i++) {
+            String[] splitBit = splitLine[i].split(":");
+            int index = Integer.parseInt(splitBit[0]);
+            double value = Double.parseDouble(splitBit[1]);
+            sv.put(index, value);
+        }
+        return sv;
+
+    }
     public String toStringDensePresentation() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < diemension; i++) {
@@ -307,17 +331,7 @@ public class SparseVector extends TreeMap<Integer, Double> {
         return sb.toString();
     }
 
-    public void fromString(String line) {
-
-        String[] splitLine = line.split(" ");
-        for (int i = 0; i < splitLine.length; i++) {
-            String[] splitBit = splitLine[i].split(":");
-            int index = Integer.parseInt(splitBit[0]);
-            double value = Double.parseDouble(splitBit[1]);
-            this.put(index, value);
-        }
-
-    }
+    
 
     public boolean isConvertedToArray() {
         return convertedToArray;

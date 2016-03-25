@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
@@ -119,10 +120,14 @@ public final class IndexedVectorFileReader implements Closeable, AutoCloseable {
 
     @Override
     public void close() throws IOException {
+        
         raf.close();
         isClosed = true;
     }
 
+    public boolean hasEntry(String key){
+        return  this.index.containsKey(key);
+    }
     public String readLine(String key)
             throws IOException {
         assertNotClosed();
@@ -148,6 +153,10 @@ public final class IndexedVectorFileReader implements Closeable, AutoCloseable {
      */
     public int getLineCount() {
         return index.size();
+    }
+
+    public Set<String> entrySet() {
+        return this.index.keySet();
     }
 
     private void assertNotClosed() {
@@ -256,4 +265,13 @@ public final class IndexedVectorFileReader implements Closeable, AutoCloseable {
             return index;
         }
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize(); //To change body of generated methods, choose Tools | Templates.
+        this.raf.close();
+    }
+    
+    
+    
 }
