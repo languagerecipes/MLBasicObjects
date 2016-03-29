@@ -252,6 +252,13 @@ public class SparseVector extends TreeMap<Integer, Double> {
         return sum;
     }
 
+    public double getSum() {
+        double sum = 0;
+        for (int i : keySet()) {
+            sum += get(i);
+        }
+        return sum;
+    }
     /**
      * get the length of the vector
      *
@@ -305,6 +312,19 @@ public class SparseVector extends TreeMap<Integer, Double> {
         });
         return sb.toString();
     }
+    
+      /**
+       * format similar to raw context vectors
+       * @return 
+       */
+    public String toStringPerLine() {
+        StringBuilder sb = new StringBuilder();
+        keySet().stream().forEach((i) -> {
+            sb.append(i).append(" : ").append(get(i).toString()).append("\n");
+        });
+        return sb.toString();
+    }
+    
 public static SparseVector fromString(String line) {
 
         SparseVector sv = new SparseVector();

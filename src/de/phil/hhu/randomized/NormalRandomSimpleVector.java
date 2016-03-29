@@ -91,6 +91,53 @@ public class NormalRandomSimpleVector {
     }
     
     
+      public SimpleSparse getPositiveOnlyRandomVector() {
+        SimpleSparse spd = new SimpleSparse();
+        spd.setDimensionality(this.reducedDimension);
+        Set<Integer> nonzeroElement = new HashSet<>();
+        while (nonzeroElement.size() != numberNonZeroElement) {
+            nonzeroElement.add(getNextRandomIndexElement());
+        }
+        Iterator<Integer> iterator = nonzeroElement.iterator();
+        // set half to poisitve another half to negative
+
+
+        
+
+        boolean isPostiveTurn = true;
+        while (iterator.hasNext()) {
+            //if (isPostiveTurn) {
+                
+                spd.setValue(iterator.next(), 
+                       //1);
+                     //   +5.0/ //Math.log(
+                    //        1.0/   
+                  //                  Math.pow(
+                      randomValuePositive.nextDouble()
+                //                            ,.8)
+                );
+                               // ) //power did not work for pow>1
+                              //  )
+                
+               // );
+              // isPostiveTurn = false;
+           // } else {
+                // 1 /Math.sqrt(randomValuePositive.nextDouble())
+            //    spd.setValue(iterator.next(), 
+            //            1.0/
+                       // Math.log(
+                     //   Math.sqrt(
+             //                Math.pow    (randomValuePositive.nextDouble(),0.3)
+                     //   )
+               // )
+              //          );
+           //    isPostiveTurn = true;
+         //   }
+        }
+        
+        return spd;
+    }
+    
     
     public SparseVector getSparseDoubleRandomVector() {
         SparseVector spd = new SparseVector(reducedDimension);

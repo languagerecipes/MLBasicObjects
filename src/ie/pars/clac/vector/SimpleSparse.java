@@ -63,7 +63,14 @@ public class SimpleSparse {
         }
         
     }
-
+    
+  public String toStringPerLine() {
+        StringBuilder sb = new StringBuilder();
+        vector.keySet().stream().forEach((i) -> {
+            sb.append(i).append(" : ").append(vector.get(i).toString()).append("\n");
+        });
+        return sb.toString();
+    }
   
     @Override
     public String toString() {
@@ -172,11 +179,85 @@ public class SimpleSparse {
         for (Integer key : getIndices()) {
             dot += (ss.getValue(key) * this.getValue(key));
         }
-        cosine = dot / (thisLength * thatLength); // so funny, I thought * has privilige to / but appreantly not on my computer.. without pranthesis I get some crap
+        cosine = dot / (thisLength * thatLength); 
 
         return cosine;
     }
+    
+     public double logcosine(SimpleSparse ss) {
+        double cosine = 0.0;
 
+        double thisLength = getLength();
+        if (thisLength == 0.0) {
+            return 0;
+        }
+        double thatLength = ss.getLength();
+        if (thatLength == 0.0) {
+            return 0;
+        }
+        double dot = 0.0;
+        for (Integer key : getIndices()) {
+            dot += (ss.getValue(key) + this.getValue(key));
+        }
+        cosine = dot - (thisLength -thatLength); 
+
+        return cosine;
+    }
+    public double euclid(SimpleSparse ss) {
+        double euclid = 0.0;
+
+//        double thisLength = getLength();
+//        if (thisLength == 0.0) {
+//            return 0;
+//        }
+//        double thatLength = ss.getLength();
+//        if (thatLength == 0.0) {
+//            return 0;
+//        }
+        
+        for (Integer key : getIndices()) {
+            euclid += Math.pow(ss.getValue(key) - this.getValue(key),2);
+        }
+        //cosine = dot / (thisLength * thatLength); // so funny, I thought * has privilige to / but appreantly not on my computer.. without pranthesis I get some crap
+
+        return Math.sqrt(euclid);
+    }
+    public double[] getDense() {
+        double[] d = new double[this.dimensionality];
+        for(Integer i: getIndices()){
+            d[i] = getValue(i);
+        }
+        return d;
+    }
+     public double[] getDenseLog() {
+        double[] d = new double[this.dimensionality];
+        for(Integer i: getIndices()){
+            d[i] = Math.log(getValue(i));
+        }
+        return d;
+    }
+      public double semiGeometric(SimpleSparse ss) {
+        double geometricInner = 0.0;
+
+//        double thisLength = getLength();
+//        if (thisLength == 0.0) {
+//            return 0;
+//        }
+//        double thatLength = ss.getLength();
+//        if (thatLength == 0.0) {
+//            return 0;
+//        }
+        
+        for (Integer key : getIndices()) {
+            double diff = ss.getValue(key) - this.getValue(key);
+            if(diff!=0){
+            //geometricInner += Math.log(diff);}
+                geometricInner *= Math.log(diff);}
+        }
+        //cosine = dot / (thisLength * thatLength); // so funny, I thought * has privilige to / but appreantly not on my computer.. without pranthesis I get some crap
+
+        return Math.sqrt(geometricInner);
+    }
     public double getLength() {
         double length = 0.0;
         for (double value : vector.values()) {
@@ -243,4 +324,6 @@ public class SimpleSparse {
 //        System.out.println(tsp.cosine(tsp));
 //
 //    }
+
+    
 }
