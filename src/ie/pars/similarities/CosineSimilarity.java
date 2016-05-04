@@ -24,7 +24,12 @@ import ie.pars.clac.vector.SimpleSparse;
  */
 public class CosineSimilarity {
 
-    
+    /**
+     * 
+     * @param ss
+     * @param ss2
+     * @return 
+     */
     public static double cosine(SimpleSparse ss, SimpleSparse ss2) {
         double cosine = 0.0;
 
@@ -37,6 +42,9 @@ public class CosineSimilarity {
         cosine = dot / (thisLength * thatLength); // so funny, I thought * has privilige to / but appreantly not on my computer.. without pranthesis I get some crap
 
         return cosine;
+    }
+     public static double cosine(double[] ss, double[] ss2) throws Exception {
+        throw new Exception("To imple,memt");
     }
     
        

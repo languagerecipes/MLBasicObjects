@@ -33,12 +33,13 @@ public class SimpleSparse {
     public static final String DIM_DELIMITER = " ";
     private String label;
     private TreeMap<Integer, Double> vector;
-    private int dimensionality;
-    
 
-    private boolean converted;
+    private int dimensionality;
+    double[] dense;
+    private boolean convetedToDense;
 
     public void setDimensionality(int dimensionality) {
+      //  System.out.println("Dim set to " +dimensionality);
         this.dimensionality = dimensionality;
     }
 
@@ -49,7 +50,7 @@ public class SimpleSparse {
     
     public SimpleSparse() {
         vector = new TreeMap<Integer, Double>();
-        converted = false;
+        convetedToDense = false;
         
     }
     
@@ -108,8 +109,19 @@ public class SimpleSparse {
             Double elementValue = this.getValue(i) + (v.getValue(i) * freq);
             this.vector.put(i, elementValue);
         }
-        converted =false;
+        convetedToDense =false;
     }
+    
+    //used for building concatenated vectors
+    public void addVectorMultiplyFreqShifted(SimpleSparse v, double freq, int shift) {
+        for (int i : v.vector.keySet()) {
+            Double elementValue = this.getValue(shift+i) + (v.getValue(i) * freq);
+            this.vector.put(i+shift, elementValue);
+        }
+        convetedToDense = false;
+    }
+    
+
     
     public static SimpleSparse fromString(String line) {
     //    System.out.println(line);
@@ -121,7 +133,7 @@ public class SimpleSparse {
             double value = Double.parseDouble(splitBit[1]);
             sv.vector.put(index, value);
         }
-        sv.converted =false;
+        sv.convetedToDense =false;
         return sv;
 
     }
@@ -135,12 +147,12 @@ public class SimpleSparse {
         for (int i : v.getIndices()) {
             setValue(i, v.getValue(i));
         }
-        converted = false;
+        convetedToDense = false;
     }
 
     public void setValue(int index, double value) {
         vector.put(index, value);
-        converted = false;
+        convetedToDense = false;
     }
 
     public double getValue(int index) {
@@ -222,16 +234,24 @@ public class SimpleSparse {
 
         return Math.sqrt(euclid);
     }
+    
+    
     public double[] getDense() {
-        double[] d = new double[this.dimensionality];
-        for(Integer i: getIndices()){
-            d[i] = getValue(i);
+        if (!convetedToDense) {
+            dense = new double[this.dimensionality];
+
+            for (Integer i : getIndices()) {
+
+                dense[i] = getValue(i);
+            }
+            convetedToDense = true;
         }
-        return d;
+        return dense;
     }
-     public double[] getDenseLog() {
+    
+    public double[] getDenseLog() {
         double[] d = new double[this.dimensionality];
-        for(Integer i: getIndices()){
+        for (Integer i : getIndices()) {
             d[i] = Math.log(getValue(i));
         }
         return d;
@@ -267,7 +287,16 @@ public class SimpleSparse {
 
         return Math.sqrt(length);
     }
+    
+    public double getSum() {
+        double sum = 0.0;
+        for (double value : vector.values()) {
 
+            sum += value;
+        }
+
+        return sum;
+    }
 //
 //    public double dot(SimpleSparse v2) {
 //        int i = 0, j = 0;

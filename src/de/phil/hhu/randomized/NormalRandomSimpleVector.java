@@ -34,6 +34,16 @@ public class NormalRandomSimpleVector {
     Random randomValuePositive = new Random();
     Random randomValueNegative = new Random();
 
+    boolean verbose = false;
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+   
     public NormalRandomSimpleVector(int originalDimension, int reducedDimension, int directNumberOfNoneZeroElement) {
        
         this.originalDimension = originalDimension;
@@ -49,10 +59,13 @@ public class NormalRandomSimpleVector {
         randomElement = new Random();
         randomValuePositive = new Random();
         randomValueNegative = new Random();
-        System.out.println("Parameters are n=" + originalDimension + " m=" + reducedDimension + " beta=" + beta);
-        numberNonZeroElement = (int) (2 * Math.round(beta * reducedDimension / 2)); // get the closet 
-        System.out.println("Number of non-zero elements: " + numberNonZeroElement);
         
+        numberNonZeroElement = directNumberOfNoneZeroElement;
+               // (int) (2 * Math.round(beta * reducedDimension / 2)); // get the closet 
+        if (verbose) {
+            System.out.println("Parameters are n=" + originalDimension + " m=" + reducedDimension + " beta=" + beta);
+            System.out.println("Number of non-zero elements: " + numberNonZeroElement);
+        }
     }
 
     /**
@@ -65,6 +78,8 @@ public class NormalRandomSimpleVector {
     }
 
     public SimpleSparse getRandomVector() {
+               int numberNonZeroElement = 
+                (int) (2 * Math.round(beta * reducedDimension / 2)); // get the closet 
         SimpleSparse spd = new SimpleSparse();
         spd.setDimensionality(this.reducedDimension);
         Set<Integer> nonzeroElement = new HashSet<>();
@@ -92,10 +107,17 @@ public class NormalRandomSimpleVector {
     
     
       public SimpleSparse getPositiveOnlyRandomVector() {
+          
         SimpleSparse spd = new SimpleSparse();
         spd.setDimensionality(this.reducedDimension);
         Set<Integer> nonzeroElement = new HashSet<>();
-        while (nonzeroElement.size() != numberNonZeroElement) {
+        
+//        while (nonzeroElement.size() != numberNonZeroElement/2) {
+//            nonzeroElement.add(getNextRandomIndexElement());
+//        }
+        
+         while (nonzeroElement.size() != numberNonZeroElement) {
+//             Random r = new Random(reducedDimension);
             nonzeroElement.add(getNextRandomIndexElement());
         }
         Iterator<Integer> iterator = nonzeroElement.iterator();
@@ -107,32 +129,18 @@ public class NormalRandomSimpleVector {
         boolean isPostiveTurn = true;
         while (iterator.hasNext()) {
             //if (isPostiveTurn) {
-                
+              double val =  1.0/
+                           Math.pow( 
+                           randomValuePositive.nextDouble()
+                           ,.7);
+            // I verified that it works with ceil too
+              double ceil = 
+                    Math.ceil(val);
                 spd.setValue(iterator.next(), 
-                       //1);
-                     //   +5.0/ //Math.log(
-                    //        1.0/   
-                  //                  Math.pow(
-                      randomValuePositive.nextDouble()
-                //                            ,.8)
+                    
+                        ceil
                 );
-                               // ) //power did not work for pow>1
-                              //  )
-                
-               // );
-              // isPostiveTurn = false;
-           // } else {
-                // 1 /Math.sqrt(randomValuePositive.nextDouble())
-            //    spd.setValue(iterator.next(), 
-            //            1.0/
-                       // Math.log(
-                     //   Math.sqrt(
-             //                Math.pow    (randomValuePositive.nextDouble(),0.3)
-                     //   )
-               // )
-              //          );
-           //    isPostiveTurn = true;
-         //   }
+               
         }
         
         return spd;
