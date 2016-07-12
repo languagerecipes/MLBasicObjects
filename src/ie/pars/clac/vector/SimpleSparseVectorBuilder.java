@@ -8,26 +8,34 @@ package ie.pars.clac.vector;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Load a serialised vector into SimpleSparse
+ *
  * @author Behrang QasemiZadeh <me at atmykitchen.info>
  */
 public class SimpleSparseVectorBuilder {
 
-    
     final TreeMap<String, Integer> keyStringMap;
+    
+    Map<String, SimpleSparse> vectors;
+    String word;
 
     public SimpleSparseVectorBuilder() throws Exception {
-
+        
         //keyStringMap = new ConcurrentSkipListMap();
         keyStringMap = new TreeMap<>();
+       
     }
 
     public SimpleSparse loadContextFile2Vec(File expVectorFile) throws Exception {
         SimpleSparse spa = new SimpleSparse(); // I get a lot of error using the trove objetcs! :-(
         if (!expVectorFile.exists()) {
+            System.err.println(expVectorFile.getCanonicalPath());
             throw new Exception("Context vector not yet aggregated  .. future add calling to aggreg...");
         }
         BufferedReader br = new BufferedReader(new FileReader(expVectorFile));
@@ -41,26 +49,27 @@ public class SimpleSparseVectorBuilder {
             }
         }
         br.close();
+        
         return spa;
     }
 
     private int getKey(String element) {
-        synchronized(keyStringMap){
-        if (this.keyStringMap.containsKey(element)) {
-            return keyStringMap.get(element);
-        } else {
-            int key = keyStringMap.size();
-            key++;
-            keyStringMap.put(element, key);
-            return key;
-        }
+        synchronized (keyStringMap) {
+            if (this.keyStringMap.containsKey(element)) {
+                return keyStringMap.get(element);
+            } else {
+                int key = keyStringMap.size();
+                key++;
+                keyStringMap.put(element, key);
+                return key;
+            }
         }
     }
-    
-    public int getSize(){
+
+    public int getSize() {
         return keyStringMap.size();
     }
 
-    
-    
+   
+
 }

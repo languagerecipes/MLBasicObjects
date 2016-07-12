@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 
 /**
@@ -105,9 +107,69 @@ public class NormalRandomSimpleVector {
         return spd;
     }
     
+      public SimpleSparse getRandomVectorsPositiveRI() {
+               int numberNonZeroElement = 
+                (int) (2 * Math.round(beta * reducedDimension / 2)); // get the closet 
+        SimpleSparse spd = new SimpleSparse();
+        spd.setDimensionality(this.reducedDimension);
+        Set<Integer> nonzeroElement = new HashSet<>();
+        while (nonzeroElement.size() != numberNonZeroElement) {
+            nonzeroElement.add(getNextRandomIndexElement());
+        }
+        Iterator<Integer> iterator = nonzeroElement.iterator();
+        // set half to poisitve another half to negative
+
+        boolean isPostiveTurn = true;
+        while (iterator.hasNext()) {
+            if (isPostiveTurn) {
+                
+                spd.setValue(iterator.next(), +1.0);
+                isPostiveTurn = false;
+            } else {
+                
+                spd.setValue(iterator.next(), +2.0);
+                isPostiveTurn = true;
+            }
+        }
+        
+        return spd;
+    }
+     public SimpleSparse getRandomVectorNormalDense() {
+               int numberNonZeroElement = 
+                reducedDimension; // get the closet 
+        SimpleSparse spd = new SimpleSparse();
+        spd.setDimensionality(this.reducedDimension);
+        Set<Integer> nonzeroElement = new HashSet<>();
+        while (nonzeroElement.size() != numberNonZeroElement) {
+            nonzeroElement.add(getNextRandomIndexElement());
+        }
+        Iterator<Integer> iterator = nonzeroElement.iterator();
+        // set half to poisitve another half to negative
+
+        boolean isPostiveTurn = true;
+        while (iterator.hasNext()) {
+            if (isPostiveTurn) {
+                
+                spd.setValue(iterator.next(),  1.0/
+                           Math.pow( 
+                           randomValuePositive.nextDouble()
+                           ,.5));
+                isPostiveTurn = false;
+            } else {
+                
+                spd.setValue(iterator.next(), -1.0/Math.pow( 
+                           randomValuePositive.nextDouble()
+                           ,.5));
+                isPostiveTurn = true;
+            }
+        }
+        
+        return spd;
+    }
     
       public SimpleSparse getPositiveOnlyRandomVector() {
-          
+          NormalDistribution nc = new NormalDistribution(0, 1);
+        double[] sample = nc.sample(reducedDimension);
         SimpleSparse spd = new SimpleSparse();
         spd.setDimensionality(this.reducedDimension);
         Set<Integer> nonzeroElement = new HashSet<>();
