@@ -43,8 +43,21 @@ public class CosineSimilarity {
 
         return cosine;
     }
+    
+    
      public static double cosine(double[] ss, double[] ss2) throws Exception {
-        throw new Exception("To imple,memt");
+        double  l1 = 0.0;
+        for(double d: ss){
+            l1=+Math.pow(d,2);
+        }
+        double l2=0.0;
+        double dot=0.0;
+         for (int i = 0; i < ss2.length; i++) {
+             double d = ss2[i];
+             l2+=Math.pow(d,2);
+             dot+=d*ss[i];
+         }
+         return dot/Math.sqrt(l1*l2);
     }
     
        
